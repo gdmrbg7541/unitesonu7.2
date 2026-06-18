@@ -702,61 +702,69 @@
             ["Space"] // YENİ: Boşluk tuşu satırı buraya eklendi
         ];
 
-       const activitiesData = [
+const activitiesData = [
     // 1. İhtiyaç Belirtme
     { 
         pre: "- أَنا", 
-        post: "إِلى كيلو سُكَّر", 
-        a: ["أَحْتاجُ","بِحاجَة"], 
+        post: "إِلى كيلو سُكَّر ( بِحاجَة / أُريدُ )", 
+        a: ["بِحاجَة"], 
+        choices: ["بِحاجَة", "أُريدُ"], // İhtiyacım var / İstiyorum ("أُريدُ"den sonra إِلى gelmez)
         hint: "İhtiyaç duymak (Bir kilo şekere ... var)" 
     },
     // 2. Birden Fazla Doğru Cevaplı (Eşyalar)
     { 
         pre: "- أَنا بِحاجَة إِلى عُلْبَة", 
-        post: "", 
+        post: " ( مِلْح / بَصَل )", 
         a: ["مِلْح", "شاي", "سُكَّر","مَكَرونَة", "عَسَل"], 
+        choices: ["مِلْح", "بَصَل"], // Tuz (Kutulu) / Soğan (Kutulu olmaz)
         hint: "Eşya/Gıda (Tuz, Çay, Makarna veya Bal)" 
     },
     // 3. Sıfat (Taze)
     { 
         pre: "- أُريدُ خُبْزًا", 
-        post: "", 
+        post: " ( طازَجًا / غالِيَة )", 
         a: ["طازَجًا"], 
+        choices: ["طازَجًا", "غالِيَة"], // Taze (Eril) / Pahalı (Dişil)
         hint: "Sıfat (Taze)" 
     },
     // 4. Muzari Fiil (Gitmek) - Bilgi / Anlatım Cümlesi
     { 
         pre: "سَيَذْهَبُ عُمَر", 
-        post: "المَدْرَسَة", 
+        post: "المَدْرَسَة ( إِلى / مِنْ )", 
         a: ["إِلى", "الى"], 
+        choices: ["إِلى", "مِنْ"], // -e doğru / -den
         hint: "Yönelme edatı (-e/-a okula)" 
     },
-    // 5.Tekil Zamirlerin Tamamı (5 Farklı Şahıs Zamiri de Doğru Kabul Edilir)
+    // 5. Tekil Zamirlerin Tamamı 
     { 
         pre: "- ", 
-        post: "بِحاجَة إِلى كيلو سُكَّر", 
+        post: "بِحاجَة إِلى كيلو سُكَّر ( أَنا / أُريدُ )", 
         a: ["أَنا", "أَنْتَ", "أَنْتِ", "هُو", "هِي", "انا", "انت"], 
+        choices: ["أَنا", "أُريدُ"], // Ben (Zamir) / İstiyorum (Fiil)
         hint: "Herhangi bir tekil şahıs zamiri (Ben, Sen veya O)" 
     },
     // 6. Şahıs Zamiri (O - Kadın)
     { 
         pre: "- ", 
-        post: "تُريدُ المِلْح", 
+        post: "تُريدُ المِلْح ( هِي / هُو )", 
         a: ["أَنْتَ", "هِي", "انت"], 
+        choices: ["هِي", "هُو"], // O (Kadın - Fiil ت ile başlar) / O (Erkek - Fiil ي ile başlar)
         hint: "Zamir (Sen -E- veya O -K-)" 
     },
     // 7. Soru Kalıbı (Fiyat)
     { 
         pre: "- ", 
-        post: "البَصَل؟", 
-        a: "بِكَم", 
+        post: "البَصَل؟ ( بِكَم / مَن )", 
+        a: ["بِكَم"], 
+        choices: ["بِكَم", "أَيّ"], // Ne kadar (Fiyat) / Hangi
         hint: "Fiyat sorusu (Kaç para?)" 
     },
     // 8. Soru Kalıbı (Miktar)
     { 
         pre: "- ", 
-        post: "كيلوغْرامًا تُريدُ؟", 
-        a: "كَم", 
+        post: "كيلوغْرامًا تُريدُ؟ ( كَم / ماذا )", 
+        a: ["كَم"], 
+        choices: ["كَم", "ماذا"], // Kaç (Miktar) / Ne
         hint: "Soru edatı (Kaç / Ne kadar?)" 
     },
     // 9. Karşılaştırma (Daha büyük) - Diyalog Düzeni
@@ -764,6 +772,7 @@
         pre: "- بِكَم البَصَل؟\n- بِـ", 
         post: "ليرات (٤)", 
         a: ["أَرْبَع", "اربع"], 
+        choices: ["أَرْبَع", "تِسْع"], // Dört / Dokuz
         hint: "Sayıyı harflerle yazınız" 
     },
     // 10. Karşılaştırma (Daha hafif) - Diyalog Düzeni
@@ -771,27 +780,31 @@
         pre: "- بِكَم البَطاطا؟\n- بِـ", 
         post: "ليرات (٥)", 
         a: ["خَمْس"], 
+        choices: ["خَمْس", "عَشْر"], // Beş / On
         hint: "Sayıyı harflerle yazınız" 
     },
     // 11. Karşılaştırma (Daha pahalı) - Bilgi Cümlesi
     { 
         pre: "المِشْمِش", 
-        post: "مِن البَصَل", 
-        a: ["أَرْخَص", "ارخص","أَغْلى", "اغلى"], 
+        post: "مِن البَصَل ( أَغْلى / أَرْخَص )", 
+        a: ["أَغْلى", "اغلى"], 
+        choices: ["أَغْلى", "أَرْخَص"], // Daha pahalı / Daha ucuz
         hint: "Sıfat (Daha pahalı)" 
     },
     // 12. Karşılaştırma (Daha ucuz) - Bilgi Cümlesi
     { 
         pre: "البَصَل", 
-        post: "مِن المِشْمِش", 
-        a: ["أَغْلى","اغلى","أَرْخَص","ارخص"], 
+        post: "مِن المِشْمِش ( أَرْخَص / أَغْلى )", 
+        a: ["أَرْخَص","ارخص"], 
+        choices: ["أَرْخَص", "أَغْلى"], // Daha ucuz / Daha pahalı
         hint: "Sıfat (Daha ucuz)" 
     },
     // 13. Karşılaştırma (Daha küçük) - Bilgi Cümlesi
     { 
         pre: "الكَرَزَة", 
-        post: "مِن البُرْتُقالَة", 
-        a: ["أَرْخَص", "ارخص","أَغْلى", "اغلى","أَصْغَر", "اصغر"], 
+        post: "مِن البُرْتُقالَة ( أَصْغَر / أَكْبَر )", 
+        a: ["أَصْغَر", "اصغر"], 
+        choices: ["أَصْغَر", "أَكْبَر"], // Daha küçük / Daha büyük
         hint: "Sıfat (Daha küçük)" 
     },
     // 14. Sebze İsimleri - Diyalog Düzeni
@@ -799,6 +812,7 @@
         pre: "- بِكَم الفاصولْيا؟\n- بِـ", 
         post: "ليرات (٩)", 
         a: ["تِسْع"], 
+        choices: ["تِسْع", "سَبْع"], // Dokuz / Yedi
         hint: "Sayıyı harflerle yazınız" 
     },
     // 15. Meyve İsimleri - Diyalog Düzeni
@@ -806,41 +820,47 @@
         pre: "- بِكَم التُّفّاح؟\n- بِـ", 
         post: "ليرات (٧)", 
         a: ["سَبْع"], 
+        choices: ["سَبْع", "خَمْس"], // Yedi / Beş
         hint: "Sayıyı harflerle yazınız" 
     },
     // 16. Alışveriş Kalıbı
     { 
         pre: "- أَهْلًا وَسَهْلًا، أَيّ", 
-        post: "؟", 
+        post: "؟ ( خِدْمَة / شَيْئًا )", 
         a: ["خِدْمَة"], 
+        choices: ["خِدْمَة", "شَيْئًا"], // Hizmet / Şey
         hint: "Nasıl yardımcı olabilirim? (Hangi ...?)" 
     },
     // 17. Olumsuzluk / Yeterlilik - Diyalog Düzeni
     { 
-    pre: "- لا، ", 
-    post: "، هَذا كافٍ", 
-    a: "شُكْرًا", 
-    hint: "Hayır, teşekkürler. Bu yeterli." 
-},
+        pre: "- لا، ", 
+        post: "، هَذا كافٍ ( شُكْرًا / نَعَمْ )", 
+        a: ["شُكْرًا"],
+        choices: ["شُكْرًا", "نَعَمْ"], // Teşekkürler / Evet (Öncesindeki "Hayır" ile çelişir)
+        hint: "Hayır, teşekkürler. Bu yeterli." 
+    },
     // 18. Para Birimi - Diyalog Düzeni
     { 
         pre: "- بِكَم الطَّماطِم؟\n- بِـ", 
         post: "ليرات (٣)", 
         a: ["ثَلاث"], 
+        choices: ["ثَلاث", "عَشْر"], // Üç / On
         hint: "Sayıyı harflerle yazınız" 
     },
     // 19. Varlık/Yokluk Sorusu
     { 
         pre: "- هَلْ", 
-        post: "مَوْز وَتُفّاح؟", 
-        a: ["عِنْدَك","تُريد","يوجَدُ"], 
+        post: "مَوْز وَتُفّاح؟ ( يوجَدُ / أَذْهَبُ )", 
+        a: ["يوجَدُ"], 
+        choices: ["يوجَدُ", "أَذْهَبُ"], // Bulunur mu? / Gider miyim?
         hint: "Var mı? / Bulunur mu?" 
     },
     // 20. Karşılaştırma (Pahalı) - Diyalog Düzeni
     { 
         pre: "- بِكَم العِنَب؟\n- بِـ", 
-        post: "ليرات (٨)", 
-        a: ["ثَمان"], 
+        post: "ليرات (٦)", 
+        a: ["سِتَّ"], 
+        choices: ["سِتَّ", "تِسْع"], // Sekiz / Dokuz
         hint: "Sayıyı harflerle yazınız" 
     }
 ];
